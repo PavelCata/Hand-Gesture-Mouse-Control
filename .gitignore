@@ -1,0 +1,33 @@
+# Virtual environment
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Local configuration
+.env
+
+# IDE settings
+.vscode/
+.idea/
+
+# Logs
+*.log
+# Python virtual environments
+venv/
+.venv/
+env/
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+
+# Local configuration and editor settings
+.env
+.vscode/
+.idea/
+
+# Logs
+*.log

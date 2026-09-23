@@ -1,87 +1,79 @@
-# Hand Mouse Control
+# Hand Gesture Mouse Control
 
-Hand Mouse Control is an interactive computer vision project that allows users to control the mouse cursor using natural hand movements captured through a standard webcam.  
-The system replaces traditional mouse input with gesture recognition, offering an intuitive and accessible way to interact with a computer.
-
-This project demonstrates practical experience in computer vision, real-time processing, gesture detection, and human–computer interaction.
-
----
-
-## About the Project
-
-The application uses MediaPipe’s hand-tracking model to identify and monitor 21 key points on each hand.  
-Based on these landmarks, the program interprets gestures and converts them into standard mouse actions:
-
-- The right hand is used for cursor movement.
-- The left hand is used for clicking and scrolling.
-
-The goal of this project is to explore alternative input methods, improve accessibility, and showcase real-time processing capabilities in Python.
-
----
+Control the Windows mouse with a webcam and hand gestures. The application uses
+the current MediaPipe Tasks Vision API to detect up to two hands in real time,
+then sends mouse commands through PyAutoGUI.
 
 ## Features
 
-### Right Hand – Mouse Control
-- Smooth and responsive cursor tracking based on the index fingertip.
-- Dynamic acceleration depending on movement speed.
-- Position smoothing to ensure stable tracking.
-
-### Left Hand – Gesture Input
-- Thumb–index gesture triggers left click (press and release).
-- A "gun" gesture triggers right click, with a cooldown to prevent accidental repeats.
-- Vertical wrist motion is used for scrolling.
-
-### Technical Highlights
-- Real-time landmark detection using MediaPipe.
-- Optimized frame processing with OpenCV.
-- Pixel-perfect mapping of normalized coordinates to screen resolution.
-- Modular code structure for easy extension and experimentation.
-
----
+- Real-time hand landmark overlay for up to two hands.
+- Right hand: move the cursor with the index-finger tip.
+- Left hand: touch the thumb and index finger together to hold the left mouse
+  button; release them to release the button. This supports click and drag.
+- Left hand: make the `gun` gesture (thumb away from middle finger, index and
+  middle fingers close together) for a right-click.
+- Left hand: move the wrist vertically for scrolling.
+- Mirrored preview window; press `Q` to close it.
 
 ## Requirements
 
-```bash
-pip install opencv-python mediapipe pyautogui
-How to Run
-bash
-Copy code
-python hand_mouse.py
-Press Q at any time to close the application.
+- Windows with a working webcam.
+- Python 3.12 or the Python version used by the included virtual environment.
+- The dependencies in `requirements.txt`.
+- `src/hand_landmarker.task`, the MediaPipe hand-landmarker model. It is already
+  included in this project.
 
-How It Works
-The webcam feed is processed frame by frame.
+Face detection is not used by the current application, so
+`face_detector.tflite` is not required.
 
-MediaPipe detects hand landmarks and returns their normalized coordinates.
+## Installation
 
-The program interprets these coordinates:
+From the project root in PowerShell:
 
-Right-hand movements are mapped to screen space.
+```powershell
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
 
-Left-hand gestures are evaluated using geometric distances between landmarks.
+If PowerShell blocks virtual-environment activation, run this once for the
+current terminal session and activate the environment again:
 
-PyAutoGUI simulates mouse actions based on recognized gestures.
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
 
-Project Structure
-text
-Copy code
-hand-mouse-control/
-├── hand_mouse.py     # Main application script
-├── README.md         # Documentation
-└── requirements.txt  # (optional) Dependency list
-Code Entry Point
-python
-Copy code
-if __name__ == "__main__":
-    handMouse()
-Potential Extensions
-Custom gesture recognition system
+## Run
 
-Calibration interface for gesture sensitivity
+```powershell
+python .\src\HandFaceBASE.py
+```
 
-Multi-user gesture profiles
+The script searches for `hand_landmarker.task` in `src` first, then in the
+project root.
 
-Integration with accessibility tools
+## Gesture reference
 
-License
-This project is open-source and free to modify.
+| Hand | Gesture | Result |
+| --- | --- | --- |
+| Right | Move index finger | Moves the cursor |
+| Left | Thumb tip close to index tip | Left click / drag while held |
+| Left | Gun gesture | Right click |
+| Left | Fast wrist movement up or down | Scroll |
+
+## Safety
+
+PyAutoGUI's fail-safe is enabled. Moving the cursor to any screen corner stops
+mouse control safely. The script also releases a held left mouse button when it
+exits.
+
+## Project structure
+
+```text
+Hand-Gesture-Mouse-Control/
+|-- requirements.txt
+`-- src/
+    |-- HandFaceBASE.py       # Application entry point
+    `-- hand_landmarker.task  # MediaPipe Tasks model
+```
